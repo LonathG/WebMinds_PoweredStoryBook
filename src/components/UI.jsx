@@ -48,6 +48,8 @@ export const UI = () => {
         <a
           className="pointer-events-auto mt-10 ml-10"
           href="https://webmindsdesigns.com/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <img className="w-20" src="/images/Webminds-dark.webp" />
         </a>

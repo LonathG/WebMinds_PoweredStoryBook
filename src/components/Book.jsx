@@ -1,6 +1,9 @@
-import { Bone, BoxGeometry, Color, Float32BufferAttribute, MeshStandardMaterial, Skeleton, SkinnedMesh, Uint16BufferAttribute, Vector3 } from 'three';
-import { pages } from './UI';
+import { Bone, BoxGeometry, Color, Float32BufferAttribute, MeshStandardMaterial, Skeleton, SkinnedMesh, SRGBColorSpace, Uint16BufferAttribute, Vector3 } from 'three';
+import { pageAtom, pages } from './UI';
 import { useMemo, useRef } from 'react';
+import { useTexture } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useAtom } from 'jotai';
 
 const PAGE_WIDTH = 1.28;
 const PAGE_HEIGHT = 1.71;
@@ -28,13 +31,14 @@ for (let i = 0; i < position.count; i++) {
   const x = vertex.x;
 
   const skinIndex = Math.max(0, Math.floor(x / SEGMENT_WIDTH));
-  let skinWeights = (x% SEGMENT_WIDTH) / SEGMENT_WIDTH;
+  let skinWeight = ( x % SEGMENT_WIDTH) / SEGMENT_WIDTH;
 
-  skinIndexed.push(skinIndexed, skinIndex + 1, 0,0);
+  skinIndexed.push(skinIndex, skinIndex + 1, 0,0);
+  skinWeights.push(1 - skinWeight, skinWeight, 0, 0); 
 }
 
 pageGeometry.setAttribute("skinIndex", new Uint16BufferAttribute(skinIndexed, 4));
-pageGeometry.setAttribute("skinWeigth", new Float32BufferAttribute(skinWeights, 4));
+pageGeometry.setAttribute("skinWeight", new Float32BufferAttribute(skinWeights, 4));
 
 const whiteColor = new Color("white")
 
@@ -47,14 +51,27 @@ const pageMaterials = [
         color: whiteColor }),
     new MeshStandardMaterial({
         color: whiteColor }),
-    new MeshStandardMaterial({
-        color: "pink" }),
-    new MeshStandardMaterial({
-        color: "blue" }),
     ];
     
+pages.forEach(({ front, back }) => {
+  useTexture.preload(`/textures/${front}.jpg`);
+  useTexture.preload(`/textures/${back}.jpg`);
+});
+useTexture.preload(`/textures/book-cover-roughness.jpg`);
 
-const Page = ({ number, front, back, ...props }) => {
+
+const Page = ({ number, front, back, page, ...props }) => {
+
+  const [picture,picture2,pictureRoughness] = useTexture([
+    `/textures/${front}.jpg`,
+    `/textures/${back}.jpg`,
+    ...(number === 0 || number === pages.length - 1
+      ? [`/textures/book-cover-roughness.jpg`]
+      : []),
+  ]);
+
+  picture.colorSpace = picture2.colorSpace = SRGBColorSpace;
+
   const group = useRef();
 
   const SkinnedMeshRef = useRef();
@@ -76,7 +93,31 @@ const Page = ({ number, front, back, ...props }) => {
     }
 
     const skeleton = new Skeleton(bones);
-    const materials = pageMaterials;
+
+    const materials = [...pageMaterials,
+      new MeshStandardMaterial({
+        color: whiteColor,
+        map: picture,
+        ...(number === 0 
+          ? {
+            roughnessMap: pictureRoughness,
+          } : {
+            roughness: 0.1
+          }),
+      }),
+
+      new MeshStandardMaterial({
+        color: whiteColor,
+        map:picture2,
+        ...(number === pages.length - 1
+          ? {
+            roughnessMap: pictureRoughness,
+          } : {
+            roughness: 0.1
+          }),
+      }),
+    ];
+
     const mesh = new SkinnedMesh(pageGeometry, materials);
 
     mesh.castShadow = true;
@@ -88,26 +129,37 @@ const Page = ({ number, front, back, ...props }) => {
     return mesh;
   }, []);
 
+  useFrame(()=> {
+    if(!SkinnedMeshRef.current){
+      return;
+    }
+    const bones = SkinnedMeshRef.current.skeleton.bones;
+  })
+
 
   return (
     <group {...props} ref={group}>
-      <primitive object={manualSkinnedMesh} ref={SkinnedMeshRef}/>
+      <primitive object={manualSkinnedMesh} ref={SkinnedMeshRef}
+      position-z = {-number * PAGE_DEPTH + page * PAGE_DEPTH}
+      />
     </group>
   );
 };
 
 export const Book = ({ ...props }) => {
+
+  const [page] = useAtom(pageAtom);
+
   return (
     <group {...props}>
       {pages.map((pageData, index) => 
-      index ===0 ? (
+      
         <Page 
-        position-x={index * 0.15}
+        page={page}
         key={index} 
         number={index} 
         {...pageData} 
         />
-      ) : null
     )}
     </group>
   );
