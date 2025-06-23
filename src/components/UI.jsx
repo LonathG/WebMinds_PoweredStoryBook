@@ -1,5 +1,6 @@
 import { atom, useAtom } from "jotai";
 
+
 const pictures = [
   "DSC00680",
   "DSC00933",
@@ -46,9 +47,9 @@ export const UI = () => {
       <main className=" pointer-events-none select-none z-10 fixed  inset-0  flex justify-between flex-col">
         <a
           className="pointer-events-auto mt-10 ml-10"
-          href="https://lessons.wawasensei.dev/courses/react-three-fiber"
+          href="https://webmindsdesigns.com/"
         >
-          <img className="w-20" src="/images/wawasensei-white.png" />
+          <img className="w-20" src="/images/Webminds-dark.webp" />
         </a>
         <div className="w-full overflow-auto pointer-events-auto flex justify-center">
           <div className="overflow-auto flex items-center gap-4 max-w-full p-10">
@@ -83,33 +84,33 @@ export const UI = () => {
         <div className="relative">
           <div className="bg-white/0  animate-horizontal-scroll flex items-center gap-8 w-max px-8">
             <h1 className="shrink-0 text-white text-10xl font-black ">
-              Wawa Sensei
+              WebMinds Designs
             </h1>
             <h2 className="shrink-0 text-white text-8xl italic font-light">
-              React Three Fiber
+              Powered By
             </h2>
             <h2 className="shrink-0 text-white text-12xl font-bold">
-              Three.js
+              WebMinds Designs
             </h2>
             <h2 className="shrink-0 text-transparent text-12xl font-bold italic outline-text">
-              Ultimate Guide
+              Powered By
             </h2>
             <h2 className="shrink-0 text-white text-9xl font-medium">
-              Tutorials
+              Talk
             </h2>
             <h2 className="shrink-0 text-white text-9xl font-extralight italic">
-              Learn
+              To
             </h2>
             <h2 className="shrink-0 text-white text-13xl font-bold">
-              Practice
+              Us
             </h2>
             <h2 className="shrink-0 text-transparent text-13xl font-bold outline-text italic">
-              Creative
+              Powered By
             </h2>
           </div>
           <div className="absolute top-0 left-0 bg-white/0 animate-horizontal-scroll-2 flex items-center gap-8 px-8 w-max">
             <h1 className="shrink-0 text-white text-10xl font-black ">
-              Wawa Sensei
+              WebMinds Designs
             </h1>
             <h2 className="shrink-0 text-white text-8xl italic font-light">
               React Three Fiber
@@ -121,13 +122,13 @@ export const UI = () => {
               Ultimate Guide
             </h2>
             <h2 className="shrink-0 text-white text-9xl font-medium">
-              Tutorials
+              Talk
             </h2>
             <h2 className="shrink-0 text-white text-9xl font-extralight italic">
-              Learn
+              To
             </h2>
             <h2 className="shrink-0 text-white text-13xl font-bold">
-              Practice
+              Us
             </h2>
             <h2 className="shrink-0 text-transparent text-13xl font-bold outline-text italic">
               Creative
