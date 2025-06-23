@@ -1,4 +1,5 @@
 import { atom, useAtom } from "jotai";
+import { useEffect } from "react";
 
 
 const pictures = [
@@ -39,9 +40,15 @@ pages.push({
   back: "book-back",
 });
 
+
 export const UI = () => {
   const [page, setPage] = useAtom(pageAtom);
-
+  
+  useEffect(() => {
+    const audio = new Audio("/audios/pagefilp.mp3");
+    audio.play();
+  }, [page]);
+  
   return (
     <>
       <main className=" pointer-events-none select-none z-10 fixed  inset-0  flex justify-between flex-col">
