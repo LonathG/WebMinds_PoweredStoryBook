@@ -122,23 +122,25 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
     }
     const skeleton = new Skeleton(bones);
 
+    const darkPageColor = new Color("#ffb469"); // darker color for inside pages
+
     const materials = [
       ...pageMaterials,
       new MeshStandardMaterial({
-        color: whiteColor,
+        color: darkPageColor,
         map: picture,
         ...(number === 0
           ? {
               roughnessMap: pictureRoughness,
             }
           : {
-              roughness: 0.1,
+              roughness: 0.6,
             }),
         emissive: emissiveColor,
         emissiveIntensity: 0,
       }),
       new MeshStandardMaterial({
-        color: whiteColor,
+        color: darkPageColor,
         map: picture2,
         ...(number === pages.length - 1
           ? {
@@ -151,6 +153,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
         emissiveIntensity: 0,
       }),
     ];
+    
     const mesh = new SkinnedMesh(pageGeometry, materials);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
